@@ -87,7 +87,7 @@ Items interact with the players stats. This means stats need to be recalculated 
 
 The keep the networking side simple, all players are responsible for their own game logic. This means, that a client by themselves decides, whether they got hit by a projectile or dealt damage to an enemy. This keeps the networking simple and allows us to do easy unit testing.
 
-This simple architecture is possible because of the game type. There is no direct combat between players, so they won't feel any lag.
+This simple architecture is possible because of the game type. There is no direct combat between players, so they won't feel any lag or unfair hits.
 
 
 ## 2.3 Nonfunctional requirements
