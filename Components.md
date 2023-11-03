@@ -2,6 +2,11 @@
 
 The following components/nodes should be created for the game:
 
+## Player Component
+The Playercomponent makes up most of the logic of the player.
+
+It holds the information about the player, their stats and holds their weapons. Due to its complexity, it should probably be broken down in a logical and a visual part.
+
 ## Movement Component
 The MovementComponent is responsible for using the input the players provides and using it on the local player object.
 
