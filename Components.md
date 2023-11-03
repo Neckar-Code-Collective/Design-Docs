@@ -2,6 +2,9 @@
 
 The following components/nodes should be created for the game:
 
+## Movement Component
+The MovementComponent is responsible for using the input the players provides and using it on the local player object.
+
 ## Health Component
 The healthcomponent is responsible for keeping track of a entities health, applying damage and notifying on death (health <= 0).
 
