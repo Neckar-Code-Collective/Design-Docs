@@ -1,0 +1,1 @@
+for /r %%v in (*.puml) do java -jar plantuml.jar  "%%v"
