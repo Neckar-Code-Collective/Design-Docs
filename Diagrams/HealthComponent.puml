@@ -1,0 +1,15 @@
+@startuml Health
+
+class HealthComponent {
+    - MaxHealth : float
+    - CurrentHealth : float
+    --
+    - CheckHealthIfDead : void
+    + Update() : void
+    + Die() : void
+    --
+    # <b>signal</b> OnDie()
+    # <b>signal</b> OnDamage(amount : float)
+}
+
+@enduml

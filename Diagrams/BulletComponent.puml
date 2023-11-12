@@ -1,0 +1,12 @@
+@startuml
+
+class Bullet {
+    - Damage : float
+    - Velocity : Vector3
+    - IsSimulatingHere : bool
+    --
+    + Setup(Damage:float, Velocity:Vector3)
+    --
+    # <b>signal</b> OnHit(target : Entity)
+}
+@enduml

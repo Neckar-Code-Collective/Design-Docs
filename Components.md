@@ -30,3 +30,7 @@ There should be signals for when a projectile gets emitted.
 The Bulletcomponent holds information about a bullet. Bullets should know the damage they have to apply, their owner, their remaining lifetime etc.
 
 It also needs a boolean switch for puppet mode.
+
+## NetworkedTransform Component
+
+The Networkedtranform Component is responsible for syncing the position and rotation of a gameobject. it also applies lerping to smooth movement.

@@ -1,0 +1,31 @@
+@startuml Weapon
+
+class AbstractWeapon {
+    - bulletEjectionsPoint : Node3D
+
+    --
+    # RPCSpawnDummyBullet(position:Vector3,direction:Vector3,data:int) : void
+    
+    --
+
+}
+
+note top of AbstractWeapon : Basic Interface for all Weapons
+note top of BasicWeapon : Premade class for all "simple weapons" (only one type of bullet,)
+
+class BasicWeapon {
+    - FireRate : float
+    - LastShotTime : float
+    - Ammo : int
+    - MaxClipSize : int
+
+    --
+    + Update() : void
+    --
+    # <b>signal</b> OnShoot()
+
+}
+
+AbstractWeapon <- BasicWeapon 
+
+@enduml
