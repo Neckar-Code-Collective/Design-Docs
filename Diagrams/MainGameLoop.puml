@@ -1,0 +1,8 @@
+@startuml
+
+[*] --> SpawnInGameShooter : if player is shooter
+[*] --> SpawnInGameMage : if player is mage
+
+
+
+@enduml

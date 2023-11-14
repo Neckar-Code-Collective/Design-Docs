@@ -7,14 +7,19 @@ class Mage {
     - maxMana : float
     - manaRegenerationRate : float
     --
-
+    + SpawnEnemy(prefab:Prefab,pos:Vector3) : void
+    + <i>Update(delta:float)</i> : void
 }
 
 note top of Mage : This class represents the mage and\n all their possibilities to alter the game
 
 class Entity {
+    <i>It may seem weird, that the base entity class holds so little data,</i>
+    <i>this is because the Entity class is merely a interface </i>
+    <i>with common functions, as health, synchronization etc. is handled by their own components</i>
     --
     # RpcDealDamage(amount:float) : void
+    # RpcPlayAnimation(anim:string) : void
     + Die() : void
 }
 
@@ -25,15 +30,30 @@ class Shooter {
     - CurrentWeapon : Weapon
     - IsLocalPlayer : bool
     --
-    
+    + Shoot() : void
+    + RPCSetActiveWeapon(weaponIndex:int) : void
 
 }
 
+class Enemy{
+    <i> this class is very empty, because most enemy logic needs to be defined per enemy.</i>
+    <i> as we didn't decide yet, which enemies from the list we made up gets implemented first</i>
+    <i> this will be more defined once we get there</i>
+    
+    <i> in the beginning, the goal is to create a enemy dummy class, which contains the main</i>
+    <i> interaction points (taking damage, damaging the player etc.) and nothing more. we will define this more, </i>
+    <i> when we have a specific plan for an enemy</i>
+    --
+    + Think() : void
+}
 
+Entity <- Enemy
+
+note top of Enemy : The Enemy class is the parent class to all enemies
 
 
 note top of Shooter : The shooters are the players, that \nrun around and... shoot stuff
 
-note left of Entity : This class is the base class for all living Gameobjects \n and defines basic interfaces, that any object needs like taking damage
+note top of Entity : This class is the base class for all living Gameobjects \n and defines basic interfaces, that any object needs like taking damage
 
 @enduml

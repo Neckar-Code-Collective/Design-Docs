@@ -1,0 +1,23 @@
+@startuml EnemyDiagram
+
+[*] --> Spawn
+Spawn : This is the initial State
+Spawn : Enemy gets spawned, replication to all clients
+
+Spawn --> MoveToNearestPlayer : After init
+
+MoveToNearestPlayer --> MoveToNearestPlayer : if not in range
+
+MoveToNearestPlayer : Continously move to the nearest player
+
+MoveToNearestPlayer --> Attack : if in range
+
+Attack : play an animation and deal damage to the player
+
+Attack --> MoveToNearestPlayer : after attack
+
+MoveToNearestPlayer --> Die : when CurrentHealth <= 0
+
+Die : play death animation, remove from simulation
+
+@enduml

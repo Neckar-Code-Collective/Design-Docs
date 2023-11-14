@@ -1,0 +1,20 @@
+@startuml
+
+[*] --> MainMenu
+
+MainMenu : just shows the name and the start buttons
+
+MainMenu --> ConnectScreen : if user clicks client button
+
+MainMenu --> WaitScreen : if user clicks server button
+
+ConnectScreen : allows user to enter ip address
+
+ConnectScreen --> WaitScreen : after entering ip and connecting
+
+WaitScreen : all users wait till game start, users select role (mage or shooter)
+
+WaitScreen --> GameScreen : when server says ready
+
+GameScreen : here is the game
+@enduml

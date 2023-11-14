@@ -1,0 +1,23 @@
+@startuml
+
+[*] --> Spawn
+Spawn : This is the initial State
+Spawn : Enemy gets spawned, replication to all clients
+
+Spawn --> MoveInAttackRange : After init
+
+MoveInAttackRange --> MoveInAttackRange : if not in range
+
+MoveInAttackRange : Continously move to a specific range the nearest player
+
+MoveInAttackRange --> AttackState : if in range
+
+AttackState : stand still and emit n projectiles at the player
+
+AttackState --> MoveInAttackRange : after attack
+
+MoveInAttackRange --> Die : when CurrentHealth <= 0
+
+Die : play death animation, remove from simulation
+
+@enduml
