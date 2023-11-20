@@ -105,11 +105,18 @@ The game runs with at least 60 fps. There will be no stuttering during the actio
 ## 2.3.5. Error handling and extreme conditions
 There will be Unit tests, which test the most commenly operations. This is achievable through the simple networking.
 ## 2.3.6. Quality issues
-(to #1 functional):  The timespan in which the mobs show on all other clients relies on the outer conditions but has to be within 200 milliseconds.  (to #2 functional): When the hitboxes of the shooter and a mob collide , the shooter receives a fixed amount of damage which is displayed on the UI.
+(to #1 functional):  The timespan in which the mobs show on all other clients relies on the outer conditions but has to be within 200 milliseconds.
+
+(to #2 functional): When the hitboxes of the shooter and a mob collide , the shooter receives a fixed amount of damage which is displayed on the UI.
+
 (to #3 functional): Different types of mobs result in differences in walking / running speed and also in the fix amount of damage they deal when colliding with hitbox of shooter.
+
 (to #4 functional): When killing mobs (cash) or when damaging the shooter (blood) the currencies will only be dropped for an amount relative to the players health.
+
 (to #5 functional): Shooting rate relies on game engine. There will be a general weapon Interface which specifies characteristics about the weapon eg. Bullet-Node.
+
 (to #6 functional): The networking aspects of this game are heavily assisted by the game engine.
+
 ## 2.3.7. System modifications
 ?
 ## 2.3.8. Physical environment
