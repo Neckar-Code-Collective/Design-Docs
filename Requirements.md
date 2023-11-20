@@ -29,17 +29,17 @@ As stated above, the main goal is to create a system, which acts as a foundation
 ### 2.2.1 The Mage
 The Mages ability allows him to spawn enemies to fight the shooters. For this the mage needs mana. Mana regenerates itself (timer).
 
-The mages spawns mobs by first clicking on an interface and the on a spot in the world (needs enough mana to be clickable). The spot needs to be a certain distance away from any shooter. The spawned enemies need to also be spawned on all other clients and its properties need to be replicated (2.2.3).
+The mages spawns mobs by first clicking on an interface and then on a spot in the world (needs enough mana to be clickable). The spot where the mobs will spawn is in a certain area around the shooter. The spawned enemies will  be spawned on all other clients and its properties will be replicated (2.2.3).
 
-The UI must also allow the mage to upgrade the mobs or unlock new ones. The UI must also show the current mana of the mage.
+The UI allows the mage to upgrade the mobs or unlock new ones. The UI also shows the current mana of the mage.                                   
 
 ### 2.2.2 The Shooters
 
-The shooters can move around in the world, either by using a keyboard and mouse or a controller. They can walk around using the WASD keys or the left joystick and look at the direction of their mouse or their right joystick. Using a button makes them shoot with their currently equiped gun. 
+The shooters move around in the world, either by using a keyboard and mouse or a controller. They walk around using the WASD keys or the left joystick and look at the direction of their mouse or their right joystick. Using a button makes them shoot with their currently equiped gun.
 
-The players information need to be replicated for all clients. This includes their position, their currently active weapon etc. 
+The players information will be replicated for all clients. This includes their position, their currently active weapon etc.
 
-Players have health, which get shown in the UI.
+Players have health, which is shown in the UI.
 
 When a players health drop to zero, they drop to the ground, are unable to shoot and need to be revived in a certain amount of time.
 
@@ -47,7 +47,8 @@ When a players health drop to zero, they drop to the ground, are unable to shoot
 
 The mobs are controlled by the computer, so they work automatically. Depending on their type, they do different actions, e.g. run towards the player, shoot the player etc.
 
-Mob spawns need to be replicated across all clients and they also need their information replicated.
+Mob spawns will be replicated across all clients and their information as well.
+
 
 
 
@@ -56,12 +57,12 @@ Mob spawns need to be replicated across all clients and they also need their inf
 **Cash**:
 
 - is dropped by dead mobs
-- is shown somewhere on the UI
-- can be exchanged for goods
-- can only be collected by shooters
+- is shown on a random spot on the UI
+- is exchangeable for goods
+- only collectable by shooters
 
 **Mana**:
-- can be used to spawn mobs
+- is used to spawn mobs
 - regenrates by itself
 - is shown on the screen of the mage
 - only the mage has mana
@@ -69,42 +70,46 @@ Mob spawns need to be replicated across all clients and they also need their inf
 **Blood**:
 - is dropped when a shooter gets damaged
 - is shown on the mages UI
-- can be exchanged for new mobs/upgrades
-- only the mage can collect blood
+- exchangeable for new mobs/upgrades
+- only the mage collects blood
 
 
 ### 2.2.5 The Weapons/Items
 
-Weapons are the main way of the shooters to defend themselves. When shooting with a weapon, a projectile gets emitted. This needs to be replicated on all clients. 
+Weapons are the main way of the shooters to defend themselves. When shooting with a weapon, a projectile gets emitted. This is replicated on all clients. 
 
 The idea is that all weapons follow a given architecture, so we can easily create new ones without having to do any new networking.
 
 ---
 
-Items interact with the players stats. This means stats need to be recalculated when picking up an item and when throwing one away.
+Items interact with the players stats. This means stats are recalculated when picking up an item and when throwing one away.
 
 ### 2.2.6 The Networking Architecture
 
-The keep the networking side simple, all players are responsible for their own game logic. This means, that a client by themselves decides, whether they got hit by a projectile or dealt damage to an enemy. This keeps the networking simple and allows us to do easy unit testing.
+The Networking Architecture keeps the networking side simple, all players are responsible for their own game logic. This means, that a client by themselves decides, whether they got hit by a projectile or dealt damage to an enemy. This keeps the networking simple and allows us to do easy unit testing.
 
 This simple architecture is possible because of the game type. There is no direct combat between players, so they won't feel any lag or unfair hits.
 
 
 ## 2.3 Nonfunctional requirements
 ## 2.3.1. User interface and human factors
-The biggest part of the users vision should be the game world, so they can have the most vision of the action.
+The biggest part of the users vision is the game world, so they can have the most vision of the action.
 
 On small UI widgets, the player can see their current currencies, their weapons and other useful information.
 ## 2.3.2. Documentation
-There should be documentation for commonly used functionality, e.g. the weapons interface. Also docs for the network API.
+There is a documentation for commonly used functionality, e.g. the weapons interface. Also docs for the network API.
 ## 2.3.3. Hardware considerations
-The user should be able to decide between keyboard and mouse and a controller
+The user is able to decide between keyboard and mouse and a controller
 ## 2.3.4. Performance characteristics
-The game should run with at least 60 fps. There should be no stuttering during the action.
+The game runs with at least 60 fps. There will be no stuttering during the action.
 ## 2.3.5. Error handling and extreme conditions
-There should be Unit tests, which test the most commenly operations. This should be achievable through the simple networking.
+There will be Unit tests, which test the most commenly operations. This is achievable through the simple networking.
 ## 2.3.6. Quality issues
-?
+(to #1 functional):  The timespan in which the mobs show on all other clients relies on the outer conditions but has to be within 200 milliseconds.  (to #2 functional): When the hitboxes of the shooter and a mob collide , the shooter receives a fixed amount of damage which is displayed on the UI.
+(to #3 functional): Different types of mobs result in differences in walking / running speed and also in the fix amount of damage they deal when colliding with hitbox of shooter.
+(to #4 functional): When killing mobs (cash) or when damaging the shooter (blood) the currencies will only be dropped for an amount relative to the players health.
+(to #5 functional): Shooting rate relies on game engine. There will be a general weapon Interface which specifies characteristics about the weapon eg. Bullet-Node.
+(to #6 functional): The networking aspects of this game are heavily assisted by the game engine.
 ## 2.3.7. System modifications
 ?
 ## 2.3.8. Physical environment
