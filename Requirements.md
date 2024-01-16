@@ -21,6 +21,12 @@ The objective of this system is to have a stable base game simulation and networ
 ?
 ## 1.6. Overview
 The game is a asymmetrical survival twin-stick shooter, where one player assumes the role of the enemy spawning
+
+
+The keep the networking side simple, all players are responsible for their own game logic. This means, that a client by themselves decides, whether they got hit by a projectile or dealt damage to an enemy. This keeps the networking simple and allows us to do easy unit testing.
+
+This simple architecture is possible because of the game type. There is no direct combat between players, so they won't feel any lag or unfair hits.
+
 ## 2. Proposed system
 ## 2.1. Overview
 As stated above, the main goal is to create a system, which acts as a foundation for all the important elements in the game. Most importantly, this means having a viable weapon architecture to easily add new content and a network foundation, which takes care of replication
@@ -92,19 +98,30 @@ This simple architecture is possible because of the game type. There is no direc
 
 ## 2.3 Nonfunctional requirements
 ## 2.3.1. User interface and human factors
-The biggest part of the users vision should be the game world, so they can have the most vision of the action.
+The biggest part of the users vision is the game world, so they can have the most vision of the action.
 
 On small UI widgets, the player can see their current currencies, their weapons and other useful information.
 ## 2.3.2. Documentation
-There should be documentation for commonly used functionality, e.g. the weapons interface. Also docs for the network API.
+There is a documentation for commonly used functionality, e.g. the weapons interface. Also docs for the network API.
 ## 2.3.3. Hardware considerations
-The user should be able to decide between keyboard and mouse and a controller
+The user is able to decide between keyboard and mouse and a controller
 ## 2.3.4. Performance characteristics
-The game should run with at least 60 fps. There should be no stuttering during the action.
+The game runs with at least 60 fps. There will be no stuttering during the action.
 ## 2.3.5. Error handling and extreme conditions
-There should be Unit tests, which test the most commenly operations. This should be achievable through the simple networking.
+There will be Unit tests, which test the most commenly operations. This is achievable through the simple networking.
 ## 2.3.6. Quality issues
-?
+(to #1 functional):  The timespan in which the mobs show on all other clients relies on the outer conditions but has to be within 200 milliseconds.
+
+(to #2 functional): When the hitboxes of the shooter and a mob collide , the shooter receives a fixed amount of damage which is displayed on the UI.
+
+(to #3 functional): Different types of mobs result in differences in walking / running speed and also in the fix amount of damage they deal when colliding with hitbox of shooter.
+
+(to #4 functional): When killing mobs (cash) or when damaging the shooter (blood) the currencies will only be dropped for an amount relative to the players health.
+
+(to #5 functional): Shooting rate relies on game engine. There will be a general weapon Interface which specifies characteristics about the weapon eg. Bullet-Node.
+
+(to #6 functional): The networking aspects of this game are heavily assisted by the game engine.
+
 ## 2.3.7. System modifications
 ?
 ## 2.3.8. Physical environment

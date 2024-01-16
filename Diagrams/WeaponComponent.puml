@@ -24,6 +24,7 @@ class BasicWeapon {
     # <b>signal</b> OnShoot()
 
 }
+
 note top of BasicWeapon : Premade class for all "simple weapons" (only one type of bullet)
 
 AbstractWeapon <- BasicWeapon 
