@@ -1,0 +1,192 @@
+@startuml NCC-Multibillion-dollar-project
+
+class Mage {
+    manaManager : ManaManager
+    enemyPrefabs : GameObjects
+    --
+    SpawnMob(int type) : void
+    Update() : void
+}
+
+class Entity {
+    - health : HealthComponent
+    - netTransform : NetworkedTransform
+
+
+
+    The Entity class is the main class, from which all mob 
+    type (players,zombies,all enemies etc.) inherit
+
+    <i>It may seem weird, that the base entity class holds so little data,</i>
+    <i>this is because the Entity class is merely a interface </i>
+    <i>with common functions, as health, synchronization etc. is handled by their own components</i>
+
+    --
+    # RpcDealDamage(amount:float) : void
+    # RpcPlayAnimation(anim:string,speed : float) : void
+    # RpcDie() : void
+}
+
+class EntityManager {
+    - activeEntities : List<Entity>
+    --
+    + registerEntity(ent:Entity) : void
+    + removeEntity(ent:Entity) : void
+}
+
+class Shooter {
+    - weaponManager : WeaponManager
+    - IsLocalPlayer : bool
+    - moneyManager : MoneyBank
+    --
+    + Shoot() : void
+    + RPCSetActiveWeapon(weaponIndex:int) : void
+
+}
+
+class Enemy {
+    <i> this class is very empty, because most enemy logic needs to be defined per enemy.</i>
+    <i> as we didn't decide yet, which enemies from the list we made up gets implemented first</i>
+    <i> this will be more defined once we get there</i>
+    
+    <i> in the beginning, the goal is to create a enemy dummy class, which contains the main</i>
+    <i> interaction points (taking damage, damaging the player etc.) and nothing more. we will define this more, </i>
+    <i> when we have a specific plan for an enemy</i>
+    --
+    + Think() : void
+}
+
+class Zombie {
+    - moveSpeed : float
+    - attackDamage : float
+    - currentTarget : Shooter
+    --
+    + Update() : void
+    - FindNearestEnemy(): Shooter
+    - DealDamage
+}
+
+class HealthComponent {
+    - MaxHealth : float
+    - CurrentHealth : float
+    --
+    - CheckHealthIfDead : void
+    + Update() : void
+    + Die() : void
+    --
+    # <b>signal</b> OnDie()
+    # <b>signal</b> OnDamage(amount : float)
+}
+
+class AbstractWeapon {
+    
+    --
+    + Reload() : void
+    # RpcShoot(pos:Vector3,direction:Vector3,data:int) : void
+    # RpcPlayReloadAnimation() : void
+}
+
+class BasicWeapon {
+    - shootRate : float (in shots per second)
+    - clipSize : int
+    - damagePerBullet : float
+    - ejectionPoint : Node3D
+    --
+    + Update() : void
+}
+
+class Bullet {
+    velocity : Vector3
+    damage : float
+    --
+    Init(vel: Vector3,damage:float) : void
+}
+
+class MoneyPrefab {
+    amount : float
+    --
+    # RpcSetAmount(a : float) : void
+    + OnCollision(player : Shooter) : void
+}
+
+class BloodPrefab {
+    amount : float
+    --
+    # RpcSetAmount(a : float) : void
+    + OnHoverDetected(mage : Mage) : void
+}
+
+class ManaManager {
+    - currentMana : float
+    - maxMana : float
+    - manaRegenerationRate : float
+    --
+    + Update() : void
+    + RemoveMana(sub : float) : void
+
+    + GetCurrentMana() : float
+    + GetManaRegeneration() : float
+    + SetMaxMana(amount : float) : void
+    + SetManaRegeneration(reg : float) : void
+}
+
+class WeaponManager {
+    - weapons : AbstractWeapon[]
+    - currentWeaponIndex : int
+    --
+    + CycleWeaponUp() : void
+    + CycleWeaponDown() : void
+    + GetCurrentWeapon() : Weapon
+}
+
+class MoneyBank {
+    - currentMoney : float
+    --
+    + AddMoney(amount:float) : void
+    + GetMoney() : float
+    + HasAtLeast(amount : float) : void
+}
+
+class NetworkedTransform {
+    target : Node3D
+    lastPosition : Vector3
+    targetPosition: Vector3
+    --
+    + Update() : void
+}
+
+class ShooterInput {
+    - myPlayer : Shooter
+    --
+    + Update() : void
+}
+
+class WeaponAK47 {
+    shootRate = 0.3
+    clipSize = 30
+    damagePerBullet = 7
+    ejectionPoint : Vector3
+}
+
+
+Shooter -[thickness=5]up-> Entity
+Enemy -[thickness=5]up-> Entity
+Zombie -[thickness=5]up-> Enemy
+
+Entity::health -[dotted]right-> HealthComponent
+Shooter::weaponManager -[dotted]right-> WeaponManager
+BasicWeapon -[thickness=5]up-> AbstractWeapon
+HealthComponent -[hidden]right-> BasicWeapon
+Mage::manaManager -[dotted]-> ManaManager
+BasicWeapon -[hidden]right-> Mage
+
+Shooter::moneyManager -[dotted]-> MoneyBank 
+
+Entity -[dotted]-> EntityManager : Register and Unregister
+ShooterInput -[dotted]-> Shooter
+
+Entity::netTransform -[dotted]-> NetworkedTransform
+
+WeaponAK47 -[thickness=5]up-> BasicWeapon
+
+@enduml
