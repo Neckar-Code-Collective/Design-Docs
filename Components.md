@@ -1,5 +1,7 @@
 # Components for the game
 
+These are just the foundational Components, so these should be created directly at the beginning and are held very generic.
+
 The following components/nodes should be created for the game:
 
 ## Player Component
@@ -7,6 +9,14 @@ The Playercomponent makes up most of the logic of the player.
 
 It holds the information about the player, their stats and holds their weapons. Due to its complexity, it should probably be broken down in a logical and a visual part.
 
+# Mage Component
+
+The Mage component holds all the logic of the mage.
+
+its job is to keep track of mana (incrementing etc.) and to hold the information
+for spawnable mobs (e.g. which mobs the mage can spawn)
+
+Its should provide a clean interface to access mana and modify its data.
 ## Movement Component
 The MovementComponent is responsible for using the input the players provides and using it on the local player object.
 
@@ -34,3 +44,7 @@ It also needs a boolean switch for puppet mode.
 ## NetworkedTransform Component
 
 The Networkedtranform Component is responsible for syncing the position and rotation of a gameobject. it also applies lerping to smooth movement.
+
+This should be pretty easy to implement thanks to godots property replication system.
+
+*note*: animation of an entity is handled by the entity bas class 
