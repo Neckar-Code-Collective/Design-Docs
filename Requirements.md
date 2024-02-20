@@ -107,7 +107,7 @@ The System also needs the ability to check for the current mana amount and remov
 The mage must be able to spawn enemies. For this, multiple things need to be done.
 
 #### 2.2.1.2.1 Spawn Logic
-When the mage decides to spawn an enemy, the game needs to check the **Mana Manager** whether the mage has enough mana to to the action.
+When the mage decides to spawn an enemy, the game needs to check the **Mana Manager** whether the mage has enough mana to do the action.
 
 If so, the game needs to calculate the spawn position for the new mob, by raycasting from the current mouse position and converting it to a place in the world. If the spot is not valid (outside of playable area, position is blocked by other object), the spawn action is canceled.
 
