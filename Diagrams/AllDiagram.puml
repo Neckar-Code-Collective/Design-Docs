@@ -45,18 +45,23 @@ class Shooter {
 }
 
 class Enemy {
-    <i> this class is very empty, because most enemy logic needs to be defined per enemy.</i>
-    <i> as we didn't decide yet, which enemies from the list we made up gets implemented first</i>
-    <i> this will be more defined once we get there</i>
-    
-    <i> in the beginning, the goal is to create a enemy dummy class, which contains the main</i>
-    <i> interaction points (taking damage, damaging the player etc.) and nothing more. we will define this more, </i>
-    <i> when we have a specific plan for an enemy</i>
+    - damage : float
+    - movementSpeed : float
+    - netWorth : int
+    - nav_agent : NavigationAgent3D
+    - target : Shooter
     --
-    + Think() : void
+    + Update(delta:float) : void
+    + Attack() : void
+    + setDamage(damage:float) : void
+    + setMoveSpeed(speed:float) : void
+    + setNetWorth(networth:float) : void
+    + getDamage() : float
+    + getMoveSpeed() : float
+    + getNetworth() : int
 }
 
-class Zombie {
+class BasicEnemy {
     - moveSpeed : float
     - attackDamage : float
     - currentTarget : Shooter
@@ -66,13 +71,19 @@ class Zombie {
     - DealDamage
 }
 
+class ChargeEnemy {
+    - waitTime : float
+}
+
 class HealthComponent {
     - MaxHealth : float
     - CurrentHealth : float
     --
-    - CheckHealthIfDead : void
+    - checkIfDead() : void
     + Update() : void
     + Die() : void
+    + heal(heal:float) : void
+    + ResetDeathHandler() : void
     --
     # <b>signal</b> OnDie()
     # <b>signal</b> OnDamage(amount : float)
@@ -81,9 +92,13 @@ class HealthComponent {
 class AbstractWeapon {
     
     --
+    + ShootInput(vel:Vector3) : void
     + Reload() : void
     # RpcShoot(pos:Vector3,direction:Vector3,data:int) : void
     # RpcPlayReloadAnimation() : void
+
+    + OnEnable() : void
+    + OnDisable() : void
 }
 
 class BasicWeapon {
@@ -93,13 +108,24 @@ class BasicWeapon {
     - ejectionPoint : Node3D
     --
     + Update() : void
+    + ShootAttack() : void
+    + CanShoot() : bool
+    + Shoot() : void
+    + Reload() : void
 }
 
 class Bullet {
-    velocity : Vector3
-    damage : float
+    - locally_owned : bool
+    - velocity : Vector3
+    - damage : float
+    - aliveTime : float
+    - maxLifeTime : float
     --
-    Init(vel: Vector3,damage:float) : void
+    + Setup(pos: Vector3,vel: Vector3,damage:float, isLocallySimulated:bool) : void
+    + OnHit(e:Entity) : void
+    + OnCollision_body(Node3d other) : void
+    + OnCollision_area(Node3D other) : void
+    + <Signal> Hit(Node3D other) : void
 }
 
 class MoneyPrefab {
@@ -111,9 +137,14 @@ class MoneyPrefab {
 
 class BloodPrefab {
     amount : float
+    lerpTarget : Vector3
+    lerpSPeed : float
     --
     # RpcSetAmount(a : float) : void
     + OnHoverDetected(mage : Mage) : void
+    + Process(delta:float) : void
+    + getters/setters
+
 }
 
 class ManaManager {
@@ -130,13 +161,16 @@ class ManaManager {
     + SetManaRegeneration(reg : float) : void
 }
 
-class WeaponManager {
+class WeaponComponent {
     - weapons : AbstractWeapon[]
     - currentWeaponIndex : int
+    - hand : Marker3D
     --
     + CycleWeaponUp() : void
     + CycleWeaponDown() : void
     + GetCurrentWeapon() : Weapon
+
+    + ShootAction() : void
 }
 
 class MoneyBank {
@@ -171,16 +205,26 @@ class WeaponAK47 {
 
 Shooter -up-|> Entity
 Enemy -up-|> Entity
-Zombie -up-|> Enemy
+BasicEnemy -up-|> Enemy
+ChargeEnemy -up-|> Enemy
 
 Entity::health -[dotted]right-> HealthComponent
-Shooter::weaponManager -[dotted]right-> WeaponManager
+Shooter::weaponManager -[dotted]do-> WeaponComponent
 BasicWeapon -up-|> AbstractWeapon
 HealthComponent -[hidden]right-> BasicWeapon
 Mage::manaManager -[dotted]-> ManaManager
 BasicWeapon -[hidden]right-> Mage
+WeaponComponent -[dotted]-> AbstractWeapon
 
 Shooter::moneyManager -[dotted]-> MoneyBank 
+
+Shooter -[dotted]-> WeaponComponent::Shoot : Calls on input
+WeaponComponent::Shoot -[dotted]-> AbstractWeapon::ShootInput : Calls on input on current weapon
+
+Bullet::OnHit -[dotted]up-> Entity::RpcDealDamage : Calls a RPC on hit
+Enemy::Attack -[dotted]up-> Entity::RpcDealDamage : Calls a RPC when shooter is getting hit
+
+BasicWeapon::Shoot -[dotted]-> Bullet : Spawns
 
 Entity -[dotted]-> EntityManager : Register and Unregister
 ShooterInput -[dotted]-> Shooter

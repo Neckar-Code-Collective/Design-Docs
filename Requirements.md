@@ -142,13 +142,13 @@ The Shooters need multiple requirements fullfilled.
 
 **Shooters** movement is controlled by either the WASD keys on a keyboard or the left analog stick on a controller.
 
-**Shooters** have a **Movement Speed** property, which is the amount of distance they can travel per second. When a user presses a button, the **shooter** should be moved for the pressed time in the specified direction (e.g. when user holds w for 0,5 seconds, the player should be moved up by *movementSpeed*0.5* units).
+**Shooters** have a **Movement Speed** property (e.g. 3, > 0), which is the amount of distance they can travel per second. When a user presses a button, the **shooter** should be moved for the pressed time in the specified direction (e.g. when user holds w for 0,5 seconds, the player should be moved up by *movementSpeed*0.5* Godot Engine units).
 
 ### 2.2.2.2 Aiming
 
 The **Shooters** can aim their weapon either by moving their mouse in the direction they intend to shoot or by using the right analog stick on a controller:
 
-- When the user is using a mouse, we need to raycast from the camera and find the spot, where our raycast hits the x-z-plane. This is where the player must look.
+- When the user is using a mouse, we need to raycast from the camera and find the spot, where our raycast hits the x-z-plane. This is where the player must look,i.e. aim his weapon in this direction
 
 - When the user is using a controller, we just use his right joystick input as his rotation.
 
@@ -157,6 +157,7 @@ The **Shooters** can aim their weapon either by moving their mouse in the direct
 Each **Shooter** has a **Weapon Manager** node as a child, which keeps track of the weapons the shooter is currently carrying.
 
 When a **Weapon** should be given to a player, the add function gets called on the **Weapon Manager** node. The node needs to create the corresponding weapon prefab as a child of itself.
+Weapons must be able to be dropped. There is also a maximum amount of weapons a Shooter can hold (3).
 
 The **Weapon Manager** needs to do the following things:
 
@@ -191,10 +192,10 @@ When shooting with a weapon, depending on whether the current client is the shoo
 **BasicWeapon** is a helper class, extending **Abstract Weapon**. It is used for basic, machine gun type weapons, so there is not as much code repetition.
 
 It needs to have the following components:
-- *Shoot Delay* : The amount of time to wait between each bullet
-- *Bullet Amount* : The amount of bullets this weapon still has
-- *Ejection Point* : The position from which Projectiles are to be emitted
-- *Damage Per Bullet* : The damage each projectile should inflict
+- *Shoot Delay* : The amount of time to wait between each bullet, > 0
+- *Bullet Amount* : The amount of bullets this weapon still has > 0
+- *Ejection Point* : The position from which Projectiles are to be emitted, Node3D
+- *Damage Per Bullet* : The damage each projectile should inflict, > 0
 
 BasicWeapon should emit a projectile, if the shoot button is currently being held down, *Bullet Amount* is higher than 0 and the last Shot was atleast *Shoot Delay* seconds ago.
 
@@ -262,7 +263,9 @@ There should be Unit tests, which test the most commenly operations. This should
 ## 2.3.9. Security issues
 ?
 ## 2.3.10. Resource issues
-?
+
+We use GDUnit4 version 4.2.1
+
 ## 2.4. Pseudo requirements
 The game should be fun.
 ## 2.5. System models
