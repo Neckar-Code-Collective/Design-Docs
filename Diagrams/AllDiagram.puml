@@ -1,17 +1,40 @@
 @startuml NCC-Multibillion-dollar-project
 
 class Mage {
-    manaManager : ManaManager
+    - collector : Area3D
+    - attractor : Area3D
+    - manaManager : ManaManager
+    - currentBloodCount : int
+    - SPAWNCOST : int = 1
+    - selectionState : SelectionState
+    - buttons : Button[]
+    - entityHolder : Node
+    - enemyPrefabs : PackedScene
+    - enemyIcons : TextureRects[]
+    - isMovingCamera : bool
+    - mouseSensitivity : float
+    - enemyUnlocks : Map
+
     enemyPrefabs : GameObjects
     --
-    SpawnMob(int type) : void
-    Update() : void
+    + SpawnMob(pos:Vector3) : void
+    + GetSpawnPosition() : Vector3
+    + CheckSpawn(pos:Vector3) : bool
+    + InitializeLabels() : void
+    + UpdateButtonStates() : void
+    + UpdateButtonState(butt:Button,canAfford:bool, cost:float,lockvisibility:bool) : void
+    + DeductBlood(amount:int) : void
+    + HasUnlockedEnemy(enemy:string) : bool
+    + UnlockEnemy(enemy:string) : void
+    + setters()/getters()...
+
 }
 
 class Entity {
     - health : HealthComponent
     - netTransform : NetworkedTransform
-
+    - healthBar : HealthBar
+    - cam : Camera3D
 
 
     The Entity class is the main class, from which all mob 
@@ -23,8 +46,10 @@ class Entity {
 
     --
     # RpcDealDamage(amount:float) : void
-    # RpcPlayAnimation(anim:string,speed : float) : void
+    # RpcUpdateHealthBar(h : float,hmax : float) : void
     # RpcDie() : void
+
+    + getters()...
 }
 
 class EntityManager {
@@ -32,16 +57,105 @@ class EntityManager {
     --
     + registerEntity(ent:Entity) : void
     + removeEntity(ent:Entity) : void
+    + GetShooterForPeerID(id : int) : Shooter
+    + GetShooters(): List<Shooter> 
+}
+
+class Flamethrower {
+    - ammo : int
+    - damageArea : Area3D
+    - isShooting : bool
+    - timeSinceLastShot : float
+    - enemiesInDamageZone : List<Entity>
+    - damageTicker : Ticker
+    - references to the particle systems
+    - ticksSinceLastDamage : int
+    --
+
+}
+
+class Global {
+    --
+    + isMage : bool
+    + isShooter : bool
+    + localShooter : Shooter
+    + networkManager : NetworkManager
+}
+
+class NetworkManager {
+    - moneySpawnPath : Node3D
+    - moneyPrefab : PackedScene
+    - bloodPrefab : PackedScene
+    - shooterPrefab : Shooter
+    --
+    + PeerConnected(id:long) : void
+    + ConnectedToServer() : void
+    + ConenctionFailed() : void
+    + ServerDisconnected() : void
+    + SpawnMoney(pos:Vector3,amount: int) : void
+    + SpawnWeapon(name:string, pos:Vector3) : void
+    + RpcSpawnWeapon(name:string, pos:Vector3) : void
+    + RpcSpawnBlood(pos : Vector3,amount : int) : void
+    + RpcEndgameShootersWin() : void
+
+} 
+
+class PopcornBullet {
+    <i> No new implementations, only overwrites
+}
+
+class Popcorngun {
+    <i> No new implementations, only overwrites
+}
+
+class PrintInteractable {
+    - msg : string
 }
 
 class Shooter {
     - weaponManager : WeaponManager
-    - IsLocalPlayer : bool
-    - moneyManager : MoneyBank
+    - currentMoneyCount : int
+    - SPEED : float 
+    - JOYSTICKDEADZONE : float
+    - simulatedJoystickX : float
+    - simulatedJoystickY : float
+    - isWalking : bool
+    - state : ShooterState
+    - currentlyTouchingingShooters : int
+    - currentInteractable : Interactable
     --
     + Shoot() : void
     + RPCSetActiveWeapon(weaponIndex:int) : void
+    + SetSimulatedJoystickInput(x:float,y:float) : void
+    + SetSimulatedJoystickRotationInput(rot:Vector2) : void
+    + GetKeyboardInputDirection() : Vector3
+    + GetJoystickInputDirection() : Vector3
+    - IsMouseInViewport(mousePos:Vector2) : bool
+    - ProcessMouseRotation(mousePos:Vecto2) : void
+    - ProcessJoystickRotation() : void
+    + GetLookDirection() : Vector3
+    - InitializeLabels() : void
+    + RpcDeductMoney(amount:int) : void
+    + OnMoneyCollectorCollision(other:Node3D) : void
+    - OnMoneyCollectorAreaLeave(other:Node3D) : void
+    - HandleDeath() : void
+    - RPCPlayWalkAnimation(shouldPlay:bool) : void
+    + RpcUpdateMoneyOnOtherPeers(amount:int) : void
+    + RpcSetHardRotation(v:Vector3) : void
+    + getters()...
 
+}
+
+class Skull {
+    - visual : Node3D
+}
+
+class Money {
+    - moneyAmount : int
+    --
+    + getters()/setters()...
+    + RpcSetAmount(amount : int) : void
+    + RpcRemove() : void
 }
 
 class Enemy {
@@ -50,9 +164,12 @@ class Enemy {
     - netWorth : int
     - nav_agent : NavigationAgent3D
     - target : Shooter
+    - attackCooldown : float
+    - canAttack : bool
     --
     + Update(delta:float) : void
     + Attack() : void
+    + ChooseNewTarget () : Shooter
     + setDamage(damage:float) : void
     + setMoveSpeed(speed:float) : void
     + setNetWorth(networth:float) : void
@@ -62,35 +179,78 @@ class Enemy {
 }
 
 class BasicEnemy {
-    - moveSpeed : float
-    - attackDamage : float
-    - currentTarget : Shooter
+    <i> This class only overwrites properties in its _Ready function and doesnt implement anything new.
+}
+
+class EnemyShop {
+    - costLabel : Label
+    - hovered : bool
+    + unlockCosts : Map<string,int>
+    - references...
     --
-    + Update() : void
-    - FindNearestEnemy(): Shooter
-    - DealDamage
+    + ShowUnlockCost() : void
+    + HideUnlockCost() : void
+    + StartGlowEffect() : void
+    + StopGlowEffect() : void
+    - UpdateLabelPosition() : void    
 }
 
 class ChargeEnemy {
     - waitTime : float
+    - state : ChargeEnemyState
+    - timer : Timer
+    --
+    + OnTimerFire() : void
+    + getters
+}
+
+class CrossbowBullet {
+    - hitcounter : int
 }
 
 class HealthComponent {
     - MaxHealth : float
     - CurrentHealth : float
     --
-    - checkIfDead() : void
+    - isDead() : void
     + Update() : void
     + Die() : void
     + heal(heal:float) : void
     + ResetDeathHandler() : void
+    + ApplyDamage(damage:float) : void
     --
     # <b>signal</b> OnDie()
     # <b>signal</b> OnDamage(amount : float)
+    + getters/setters()
 }
 
+class Interactable {
+    + RpcInteract(peer : int) : void
+}
+
+class RevenantEnemy {
+    - state : RevenantEnemyState
+    --
+    + Ticker() : void
+}
+
+
+
+class HydraEnemy {
+    - moveSpeed : float
+    - damageArea : Area3D
+    - shootersInDamageZone : List<Shooter>
+    - damageTimer : Timer
+    - timeSinceLastShot : float
+    - referencesToParticleSystems...
+    --
+    - OnDamageZoneEnter(other : Node3D) : void
+    - OnDamageZoneLeave(other : Node3D) : void
+}
+
+
 class AbstractWeapon {
-    
+    - name : string
     --
     + ShootInput(vel:Vector3) : void
     + Reload() : void
@@ -99,7 +259,15 @@ class AbstractWeapon {
 
     + OnEnable() : void
     + OnDisable() : void
+
+    + GetWeaponName() : string
 }
+
+class Ak47 {
+
+}
+
+
 
 class BasicWeapon {
     - shootRate : float (in shots per second)
@@ -126,23 +294,16 @@ class Bullet {
     + OnCollision_body(Node3d other) : void
     + OnCollision_area(Node3D other) : void
     + <Signal> Hit(Node3D other) : void
+    + getters()...
 }
 
-class MoneyPrefab {
-    amount : float
-    --
-    # RpcSetAmount(a : float) : void
-    + OnCollision(player : Shooter) : void
-}
+
 
 class BloodPrefab {
     amount : float
     lerpTarget : Vector3
     lerpSPeed : float
     --
-    # RpcSetAmount(a : float) : void
-    + OnHoverDetected(mage : Mage) : void
-    + Process(delta:float) : void
     + getters/setters
 
 }
@@ -165,42 +326,62 @@ class WeaponComponent {
     - weapons : AbstractWeapon[]
     - currentWeaponIndex : int
     - hand : Marker3D
+    - equippedWeapon : AbstractWeapon
     --
-    + CycleWeaponUp() : void
-    + CycleWeaponDown() : void
+    + ScrollUp() : void
+    + ScrollDown() : void
     + GetCurrentWeapon() : Weapon
-
+    + DropCurrentWeapon() : void
     + ShootAction() : void
-}
-
-class MoneyBank {
-    - currentMoney : float
-    --
-    + AddMoney(amount:float) : void
-    + GetMoney() : float
-    + HasAtLeast(amount : float) : void
+    + SwitchWeaponTo(index:int) : void
+    + HasSpace() : bool
+    + RpcEquipWeapon(index:int) : void
+    + RpcSetRemoteWeaponCache(index:int,weapon_name:string, nodeName:string) : void
 }
 
 class NetworkedTransform {
-    target : Node3D
-    lastPosition : Vector3
-    targetPosition: Vector3
+    - target : Node3D
+    - targetRotation : Vector3
+    - targetPosition: Vector3
+    - updateInterval : float
+    - updateTimer : Timer
     --
-    + Update() : void
+    + OnTimer() : void
+    + RpcUpdatePosition(pos:Vector3,rot:Vector3)
 }
 
-class ShooterInput {
-    - myPlayer : Shooter
+class WeaponShop {
+    - weaponSpawnPos : Node3D
+    - price : int
+    - weaponToSell : string
     --
-    + Update() : void
+
 }
 
-class WeaponAK47 {
-    shootRate = 0.3
-    clipSize = 30
-    damagePerBullet = 7
-    ejectionPoint : Vector3
+class WorldItem {
+    - name : string
+    - visual : Node3D
+    - visualYStartPos : float
+    --
+    + RpcKill() : void
+    + RpcSetPosition(pos:Vector3) : void
+    + GetWeaponName() : string
 }
+
+class WeaponReg {
+    - equipedWeapons : Map
+    - worldWeapons : Map
+    --
+    + GetEquipedWeapon(name:string) : PackedScene
+    + GetWorldWeapon(name:string) : PackedScene
+}
+
+
+
+class Camera3D {
+    - zoom : float
+}
+
 
 
 Shooter -up-|> Entity
@@ -216,7 +397,6 @@ Mage::manaManager -[dotted]-> ManaManager
 BasicWeapon -[hidden]right-> Mage
 WeaponComponent -[dotted]-> AbstractWeapon
 
-Shooter::moneyManager -[dotted]-> MoneyBank 
 
 Shooter -[dotted]-> WeaponComponent::Shoot : Calls on input
 WeaponComponent::Shoot -[dotted]-> AbstractWeapon::ShootInput : Calls on input on current weapon
@@ -227,10 +407,32 @@ Enemy::Attack -[dotted]up-> Entity::RpcDealDamage : Calls a RPC when shooter is 
 BasicWeapon::Shoot -[dotted]-> Bullet : Spawns
 
 Entity -[dotted]-> EntityManager : Register and Unregister
-ShooterInput -[dotted]-> Shooter
+
 
 Entity::netTransform -[dotted]-> NetworkedTransform
 
-WeaponAK47 -up-|> BasicWeapon
+CrossbowBullet -up-|> Bullet
+PopcornBullet -up-|> Bullet
+
+RevenantEnemy -up-|> Enemy
+HydraEnemy -up-|> Enemy
+
+PrintInteractable -up-> Interactable
+EnemyShop -up-|> Interactable
+WeaponShop -up-|> Interactable
+
+Ak47 -up-|> BasicWeapon
+Popcorngun -up-|> BasicWeapon
+Skull -up-|> AbstractWeapon
+Flamethrower -up-|> AbstractWeapon
+
+Mage -[dotted]-> BloodPrefab : collects
+WeaponComponent -[dotted]-> WeaponReg : Looks up weapon prefabs
+Camera3D -[dotted]-> Shooter : keeps focus on
+Shooter -[dotted]-> Money : collects
+Shooter -[dotted]-> WorldItem : picks up
+WorldItem -[dotted]-> WeaponComponent : adds weapon
+NetworkManager -[dotted]-> Shooter : creates
+NetworkManager -[dotted]-> Money : spawns
 
 @enduml

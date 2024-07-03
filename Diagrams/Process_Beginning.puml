@@ -1,0 +1,32 @@
+@startuml Process_AtBeginning
+
+start
+:Get Idea;
+:Define Idea;
+
+:Define Requirements; 
+
+repeat : Define roughly the Tasks from Requirements
+
+backward: Create Prototype ;
+repeat while (Do we know how to implement the idea?) is (no) not (yes)
+
+
+
+:Define Tests for Tasks ;
+
+:Implement Tests;
+
+repeat : Implement Tasks
+
+backward: Fix Implementation;
+repeat while (Does Implementation Satisfy our Tests?) is (no) not (yes)
+
+repeat : Review Code 
+backward : Fix Errors ;
+repeat while (Do we find errors?) is (yes) not (no)
+
+stop
+
+
+@enduml

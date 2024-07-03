@@ -1,0 +1,61 @@
+@startuml Process_AtEnd
+
+start
+:Get Idea;
+:Base Idea gets discussed in Group Session;
+if (Is Base Idea Accepted by the Committee (us) ?) then (No)
+    stop 
+else (Yes)
+
+repeat : Define Idea in Group Meeting
+
+repeat while (Is Vision of idea clear for everybody) is (no) not (yes)
+
+repeat : Define Requirements 
+
+backward: Redo Requirements;
+repeat while (Do Requirements display the essence of our idea?) is (no)
+
+repeat : Define exact Tasks from Requirements
+
+backward: Create Prototype ;
+repeat while (Do we know how to implement the idea?) is (no) not (yes)
+
+:Define Task sequence;
+
+if ( Changes to Class Diagram needed?) then (yes)
+    :Adjust Class Diagram;
+else (no)
+endif
+
+repeat :Verify Task
+
+backward: Split task into smaller chunks;
+repeat while (Is Task accomplisheable in one Session?) is (no)
+repeat
+backward: Rethink Task and how it is supposed to interact with the existing interfaces
+repeat while (Is task implementable into our Architecture?) is (no)
+
+:Plan Task Sequence (The Order in which the tasks need to be completed);
+
+:Divide Tasks between Team Members;
+
+:Define Tests for Tasks ;
+
+:Implement Tests;
+
+repeat : Implement Tasks
+
+backward: Fix Implementation;
+repeat while (Does Implementation Satisfy our Tests?) is (no) not (yes)
+
+: Add Documentation for Implementation;
+
+repeat : Review Code 
+backward : Fix Errors and Merge Conflicts;
+repeat while (Do we find something Undesireable (code style, errors, etc.)?) is (yes) not (no)
+
+stop
+
+
+@enduml

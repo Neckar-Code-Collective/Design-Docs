@@ -15,7 +15,7 @@ The objective of this system is to have a stable base game simulation and networ
 - *Mage*: The mage's job is to spawn the enemies into the game world, and their goal is to eliminate the other players (*Shooters*). They see the world from a higher position and have full visibility of everything.
 - *Shooters*: The shooter's job is to survive the hordes of enemies that the mages summons. The Shooters have access to a arsenal of weapons to defend themselves.
 - *Mobs*: The enemies of the shooters. They get spawned by the mage and get controlled through AI.
-
+- *TDD* : Test driven development
 
 ## 1.5. References
 ?
@@ -44,11 +44,11 @@ As stated above, the main goal is to create a system, which acts as a foundation
 The **Health Component** needs to keep track of the current health of a entity. For that, it has the following properties:
 
 - *Current Health* : stores the current health of the entity
-- *Max Health* : store the maximum health of the entity
+- *Max Health* : store the maximum health of the entity, > 0
 
 The **Health Component** needs to correctly apply healing and damage to the current health. *Current Health* can **not** exceed *Max Health*. 
 
-The **Health Component** also needs to handle specific events/signals:
+The **Health Component** also needs to emit specific events/signals:
 
 - OnDamage(float amount) : Gets called when an entity gets damaged
 - OnDie() : Gets called when the *Current Health* is below 0.
@@ -109,7 +109,7 @@ The mage must be able to spawn enemies. For this, multiple things need to be don
 #### 2.2.1.2.1 Spawn Logic
 When the mage decides to spawn an enemy, the game needs to check the **Mana Manager** whether the mage has enough mana to do the action.
 
-If so, the game needs to calculate the spawn position for the new mob, by raycasting from the current mouse position and converting it to a place in the world. If the spot is not valid (outside of playable area, position is blocked by other object), the spawn action is canceled.
+If so, the game needs to calculate the spawn position for the new mob, by raycasting from the current mouse position and converting it to a place in the world. If the spot is not valid (outside of playable area, position is blocked by other object or mob), the spawn action is canceled.
 
 If the last step succeded, the game creates an enemy from the choosen prefab at the calculated position and calls the register method on the **Entity Manager**. This replicates the spawned mob to all other players.
 
@@ -127,7 +127,7 @@ The UI should also include a upgrade button for every mob type, so the mage can 
 To upgrade their mobs, the mage has the currency blood. Blood has the following characteristics:
 
 - Blood is a object in the game world.
-- Blood gets dropped by **Shooters**, when they receive damage by mobs. The blood should be spawned at the position of the **Shooter** when it was it.
+- Blood gets dropped by **Shooters**, when they receive damage by mobs. The blood should be spawned at the position of the **Shooter** when they were hit.
 - Blood is only visible to the mage.
 - Blood can be collected by the mage by moving their mouse cursor near to the blood. For this, an invisible object is glued to the mouse cursor of the mage, which collects blood objects in it's perimeter.
 - The mage class stores the current amount of collected blood.
@@ -213,6 +213,17 @@ After being spawned into the simulation, a bullet simply flies in a specific dir
   - if the bullet **is not** *locally simulated*, we simply remove it from the simulation.
   - if the bullet **is** *locally simulated*, we call the RPCDealDamage function on the hit entity with the specified damage value. After that, we delete it from the simulation
 
+#### 2.2.2.5.3 Other Weapons
+
+**Flamethrower**:
+ - The Flamethrower shoots flames in an area in front of the player. While the player presses down the button, the entities inside the area get 3 damage every 10 ticks.
+
+ **Ak47**:
+ - The Ak is similar to the BasicWeapon, but adds a slight spread to the bullets
+
+ **Crossbow**:
+ - The Crossbow is similar to the BasicWeapon, however its bullets are able to penetrate up to 2 enemies
+
 ### 2.2.2.6 Money System
 
 To buy new equipment, the Shooters can earn **Money**. Money has the following characteristics:
@@ -221,7 +232,15 @@ To buy new equipment, the Shooters can earn **Money**. Money has the following c
 - **Money** can exist as an object in the game world. This object contains a value *Money Amount*.
 - Each **Shooter** has a property *money*, which stores their current money
 - Upon getting into contact with a Shooter, the **Money** object gets removed from the game world and the **Shooter** gets *Money Amount* added to their *money* property.
-- TODO: ADD MONEY SPENDING METHOD.
+- **Money** can be spent at shops which allow the player to purchase new weapons.
+
+### 2.2.2.6.1 Shops 
+
+Shooters should be able to buy new weapons at weapon shops. These are spread out across the level and allow the player to trade money aganinst a weapon. 
+
+**Interaction**:  
+
+When a shooter intersects with a specific area, they get a prompt that they are able to press a button to interact. In case they do press it, the game will check this players balance and, if they have enough money, will deduct a set amount from them and spawn an item at a specific place in the world.
 
 ---
 
@@ -240,6 +259,23 @@ The **Zombie** is a very simple enemy. Upon spawning, it selects the nearest pla
 
 The AI of the Zombie is very simple. It uses the Godot Pathfinding system to find the nearest path to its selected target and deals damage to it upon beeing in a specific distance of it.
 
+### 2.2.3.2 The Revenant
+
+The Revenant is an enemy that needs to be killed twice. When being brought down to 0 health, the revenant stops moving for 2.1 seconds, heals himselve back to full life and continues following attacking the nearest player, all while periodically getting 10 damage and gaining a small movementspeed buff (2%). If he dies again, he gets removes from the game
+
+### 2.2.3.3 The Charger
+
+The Charger stops every few seconds and comes to a full halt for 3 seconds, only to then charge to the nearest player at twice the normal speed for 2 seconds. This cycle continues until he dies.
+
+### 2.2.3.4 The Hydra
+
+The Hydra is dragon enemy, that peridically spits fire, dealing damage in a box shaped area in front of him
+
+---
+
+### 2.2.4 End
+
+The game ends when the shooters collect a given number of skulls, that are spread over the map, and return them to the middle of the map, which will trigger the end screen.
 
 ## 2.3 Nonfunctional requirements
 ## 2.3.1. User interface and human factors
