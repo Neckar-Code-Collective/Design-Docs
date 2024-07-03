@@ -164,6 +164,7 @@ The **Weapon Manager** needs to do the following things:
 - **Handle the Weapon Prefabs**: Each weapon the Shooter picks up is a child node in its node hirarchy. The **Weapon Managers** job is to have only the currently selected weapon active.
 - **Handle Weapon Switch**: When the user moves their mouse wheel or presses the upper buttons on the back of the controller, the weapon manager should cycle through the weapons, enabling and disabling the prefabs as it goes.
 - **Forward Shoot Action**: When the user decides to shoot, the weapon manager must forward this to the currently active weapon prefab.
+- **Drop Weapon**: When the users presses G, the current gun needs to be dropped.
 
 
 ### 2.2.2.4 Shooting
