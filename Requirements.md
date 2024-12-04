@@ -6,8 +6,7 @@ This document specifies all functionality that should be supported by our system
 
 ## 1.1. Purpose of the system
 The systems purpose is to simulate the game world and to replicate everything relevant to other players.
-## 1.2. Scope of the system
-?
+
 ## 1.3. Objectives and success criteria of the project
 The objective of this system is to have a stable base game simulation and network replication to easily add new weapons, enemies etc.
 ## 1.4. Definitions, acronyms, and abbreviations
@@ -17,8 +16,7 @@ The objective of this system is to have a stable base game simulation and networ
 - *Mobs*: The enemies of the shooters. They get spawned by the mage and get controlled through AI.
 - *TDD* : Test driven development
 
-## 1.5. References
-?
+
 ## 1.6. Overview
 The game is a asymmetrical survival twin-stick shooter, where one player assumes the role of the enemy spawning
 
@@ -291,13 +289,7 @@ The user should be able to decide between keyboard and mouse and a controller
 The game should run with at least 60 fps. There should be no stuttering during the action.
 ## 2.3.5. Error handling and extreme conditions
 There should be Unit tests, which test the most commenly operations. This should be achievable through the simple networking.
-## 2.3.6. Quality issues
-?
-## 2.3.7. System modifications
-?
-## 2.3.8. Physical environment
-?
-## 2.3.9. Security issues
+
 ?
 ## 2.3.10. Resource issues
 
@@ -309,11 +301,7 @@ The game should be fun.
 The models can be found [here](https://github.com/Neckar-Code-Collective/Design-Docs)
 ## 2.5.1. Scenarios
 Either all shooters die and the mage wins or the endboss gets beaten and the shooters win
-## 2.5.2. Use case model
-## 2.5.3. Object model
-## 2.5.3.1. Data dictionary
-## 2.5.3.2. Class diagrams
-## 2.5.4. Dynamic models
+
 ## 2.5.5. User-interface -- navigational paths and screen mock-ups
 The UI should look similar to the one in League of Legends
 
